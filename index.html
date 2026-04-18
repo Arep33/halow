@@ -16,7 +16,7 @@
         }
 
         body { 
-            background-image: url('dut2.jpg'); 
+            background-image: url('background.jpg'); 
             background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -28,13 +28,22 @@
             transition: background-color 0.5s ease;
         }
 
-        /* --- MODE FOKUS TOTAL --- */
+        /* --- MODE FOKUS TOTAL (HATI) --- */
         body.focus-mode { 
             background-image: none !important; 
             background-color: black !important; 
         }
 
-        /* Menyembunyikan SEMUA elemen kecuali Hati saat mode fokus */
+        /* --- MODE FOKUS LATAR (HANYA BG - SEMBUNYI TOTAL) --- */
+        body.bg-only .main-ui, 
+        body.bg-only #special-note, 
+        body.bg-only .controls-container,
+        body.bg-only .heart-watermark {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            visibility: hidden !important;
+        }
+
         body.focus-mode .hide-on-focus, 
         body.focus-mode #special-note,
         body.focus-mode .controls-container { 
@@ -43,7 +52,6 @@
             visibility: hidden !important; 
         }
 
-        /* Menghilangkan background box putih saat fokus agar hanya hati yang sisa */
         body.focus-mode #main-box {
             background: transparent !important;
             border: none !important;
@@ -74,7 +82,6 @@
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Posisi hati saat fokus (ke tengah layar) */
         body.focus-mode .heart-watermark {
             top: 50%;
             transform: translate(-50%, -50%) scale(1.3);
@@ -103,12 +110,12 @@
         .control-btn { background: white; border: none; padding: 10px 15px; border-radius: 12px; cursor: pointer; font-size: 10px; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
-<body>
+<body onclick="handleGlobalClick(event)">
 
     <canvas id="rainCanvas"></canvas>
 
-    <div id="main-box">
-        <div class="heart-watermark" onclick="handleHeartClick()">
+    <div id="main-box" class="main-ui">
+        <div class="heart-watermark" onclick="handleHeartClick(event)">
             <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#ff4d6d" d="M50,95 C50,95 5,65 5,35 A22,22 0,0,1 50,25 A22,22 0,0,1 95,35 C95,65 50,95 50,95 Z"/>
                 <text x="50" y="48" text-anchor="middle" font-family="serif" font-weight="bold" font-size="18" fill="#ffffff">A&R</text>
@@ -123,12 +130,12 @@
                 <input type="text" id="single-input" class="input-field" placeholder="Angka-nya masukin disini sayang...">
                 <button id="add-btn" class="btn-add">+</button>
             </div>
-            <div id="temp-list" style="font-size:11px; color:#64748b; margin-bottom:15px; text-align:left;">Angka yang kamu masukin: -</div>
+            <div id="temp-list" style="font-size:11px; color:#64748b; margin-bottom:15px; text-align:left;">Angka-nya disini sayang</div>
             <button id="sort-btn" class="btn-sort">Pencet ini sayang buat ngurutin</button>
             <div id="output-container">
                 <span class="section-title">Hasilnya</span>
                 <div id="output-new"><span class="label-xs">Sebelum urut:</span><div id="new-before" class="val-txt"></div><span class="label-xs" style="color:#ff4d6d">Sesudah urut:</span><div id="new-after" class="val-txt" style="font-weight:bold; color:#ff4d6d;"></div></div>
-                <span class="section-title">Riwayatnya</span>
+                <span class="section-title">Riwayatmu</span>
                 <div id="output-history"><div id="history-list"></div></div>
                 <button id="full-reset-btn" class="btn-reset-normal">Mulai Ulang</button>
             </div>
@@ -137,12 +144,13 @@
 
     <div id="special-note">
         <div style="font-family:serif; font-size:12px; color:#ff4d6d; font-weight:bold; border-bottom:1px solid #eee; margin-bottom:5px;">Dari orang ganteng</div>
-        <div style="font-family:monospace; font-size:11px; color:#444;">Angkanya sudah urut ya Rena sayang! ❤️</div>
+        <div style="font-family:monospace; font-size:11px; color:#444;">Angka sudah urut ya Rena sayang! ❤️</div>
     </div>
 
     <div class="controls-container">
-        <button onclick="document.body.classList.toggle('gallery-fit')" class="control-btn">Lihat foto my pacar</button>
-        <button id="hide-btn" onclick="toggleBox()" class="control-btn">Sembunyikan Box</button>
+        <button onclick="document.body.classList.toggle('gallery-fit')" class="control-btn">Lihat orang cantik</button>
+        <button id="hide-btn" onclick="toggleBox(event)" class="control-btn">Sembunyi Box</button>
+        <button onclick="enterBgFocus(event)" class="control-btn" style="color: #ff4d6d;">Mode Fokus</button>
     </div>
 
     <script>
@@ -173,7 +181,8 @@
             }
         }
 
-        function handleHeartClick() {
+        function handleHeartClick(e) {
+            e.stopPropagation(); // Mencegah terpicu klik global untuk exit
             const isFocus = document.body.classList.toggle('focus-mode');
             if (isFocus) {
                 isRaining = true;
@@ -190,12 +199,25 @@
             }
         }
 
-        function toggleBox() {
+        function toggleBox(e) {
+            e.stopPropagation();
             const box = document.getElementById('main-box');
             const isH = box.style.opacity === "0";
             box.style.opacity = isH ? "1" : "0";
             box.style.pointerEvents = isH ? "auto" : "none";
             document.getElementById('hide-btn').innerText = isH ? "Sembunyi Box" : "Muncul Box";
+        }
+
+        function enterBgFocus(e) {
+            e.stopPropagation(); // Agar klik tombol tidak langsung mematikan modenya
+            document.body.classList.add('bg-only');
+        }
+
+        function handleGlobalClick(e) {
+            // Jika sedang dalam mode bg-only, klik di manapun untuk mengembalikan UI
+            if (document.body.classList.contains('bg-only')) {
+                document.body.classList.remove('bg-only');
+            }
         }
     </script>
 
@@ -233,8 +255,8 @@
                 num_val = parse_input(val)
                 current_draft.append(num_val)
                 input_el.value = ""
-                temp_display.innerText = "Disini angka-nya ya sayang: " + ", ".join([format_number(x) for x in current_draft])
-            except: window.alert("Cuma bisa angka sayaanggg")
+                temp_display.innerText = "Disini angka-nya sayang: " + ", ".join([format_number(x) for x in current_draft])
+            except: window.alert("Gunakan angka (5) atau pecahan (2 1/2)")
 
         def reset_all(event):
             global current_draft
@@ -246,7 +268,10 @@
 
         def run_sort(event):
             global current_draft
-            if not current_draft: return
+            if not current_draft:
+                window.alert("tambahin dulu angkanya sayang")
+                return
+            
             document.getElementById("output-container").style.display = "block"
             document.getElementById("special-note").style.display = "block"
             before_str = ", ".join([format_number(x) for x in current_draft])
@@ -259,7 +284,7 @@
             document.getElementById("new-after").innerText = after_str
             item = document.createElement("div")
             item.className = "hist-item"
-            item.innerHTML = f"<span class='hist-meta'>📅 {full_time}</span><span class='label-xs'>Sblm:</span> {before_str}<br><span class='label-xs' style='color:#a855f7'>Ssdh:</span> {after_str}"
+            item.innerHTML = f"<span class='hist-meta'>📅 {full_time}</span><span class='label-xs'>Sebelum urut:</span> {before_str}<br><span class='label-xs' style='color:#a855f7'>Sesudah urut:</span> {after_str}"
             document.getElementById("history-list").prepend(item)
             current_draft = []
             document.getElementById("temp-list").innerText = "Draft: -"
