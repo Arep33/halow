@@ -12,6 +12,7 @@
         html, body { 
             height: 100%; margin: 0; padding: 0; 
             background-color: black;
+            overflow-y: auto; 
             overflow-x: hidden;
         }
 
@@ -28,22 +29,17 @@
             transition: background-color 0.5s ease;
         }
 
-        /* --- MODE FOKUS TOTAL (HATI) --- */
-        body.focus-mode { 
-            background-image: none !important; 
-            background-color: black !important; 
-        }
-
-        /* --- PERTANYAAN SAYANG --- */
+        /* --- FITUR PERTANYAAN SAYANG --- */
         #love-question-container {
             display: none;
             position: fixed;
-            top: 65%;
+            top: 55%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 200;
             text-align: center;
             width: 100%;
+            pointer-events: none;
         }
 
         body.focus-mode #love-question-container {
@@ -52,79 +48,62 @@
 
         .question-text {
             color: white;
-            font-size: 1.5rem;
+            font-size: 22px;
             font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(255, 77, 109, 0.8);
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(255, 77, 109, 1);
         }
 
         .btn-love {
-            padding: 10px 30px;
-            font-size: 16px;
+            padding: 10px 25px;
+            font-size: 14px;
             font-weight: bold;
             border-radius: 50px;
             border: none;
             cursor: pointer;
-            margin: 0 10px;
-            transition: all 0.2s;
+            pointer-events: auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .btn-ya { background: #ff4d6d; color: white; }
-        .btn-tidak { background: white; color: #ff4d6d; position: absolute; }
-
-        /* --- MODE FOKUS LATAR (HANYA BG - SEMBUNYI TOTAL) --- */
-        body.bg-only .main-ui, 
-        body.bg-only #special-note, 
-        body.bg-only .controls-container,
-        body.bg-only .heart-watermark {
-            opacity: 0 !important;
-            pointer-events: none !important;
-            visibility: hidden !important;
+        .btn-ya { background: #ff4d6d; color: white; margin-right: 10px; }
+        
+        .btn-tidak { 
+            background: white; 
+            color: #ff4d6d; 
+            position: absolute; 
+            white-space: nowrap;
+            display: none;
+            transition: all 0.1s ease-out;
+            z-index: 1000;
         }
 
-        body.focus-mode .hide-on-focus, 
-        body.focus-mode #special-note,
-        body.focus-mode .controls-container { 
-            opacity: 0 !important; 
-            pointer-events: none !important; 
-            visibility: hidden !important; 
+        /* --- LOGIKA TAMPILAN --- */
+        body.focus-mode { background-image: none !important; background-color: black !important; }
+        body.bg-only .main-ui, body.bg-only #special-note, body.bg-only .controls-container, body.bg-only .heart-watermark {
+            opacity: 0 !important; pointer-events: none !important; visibility: hidden !important;
         }
-
-        body.focus-mode #main-box {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            backdrop-filter: none !important;
+        body.focus-mode .hide-on-focus, body.focus-mode #special-note, body.focus-mode .controls-container { 
+            opacity: 0 !important; pointer-events: none !important; visibility: hidden !important; 
         }
-
+        body.focus-mode #main-box { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }
         body.gallery-fit { background-size: contain !important; }
 
         #rainCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
 
         #main-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 25px; border-radius: 35px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            text-align: center; width: 100%; max-width: 350px;
-            position: relative; z-index: 10; border: 1px solid white;
-            padding-top: 65px;
-            transition: all 0.5s ease;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 35px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            text-align: center; width: 100%; max-width: 350px; position: relative; z-index: 10; 
+            border: 1px solid white; padding-top: 65px; transition: all 0.5s ease;
         }
 
         .heart-watermark {
             position: absolute; top: -85px; left: 50%; transform: translateX(-50%);
-            z-index: 100; width: 160px; height: 160px;
-            filter: drop-shadow(0 12px 24px rgba(255, 77, 109, 0.5));
-            cursor: pointer;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100; width: 160px; height: 160px; filter: drop-shadow(0 12px 24px rgba(255, 77, 109, 0.5));
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        body.focus-mode .heart-watermark {
-            top: 40%;
-            transform: translate(-50%, -50%) scale(1.1);
-            position: fixed;
-        }
+        body.focus-mode .heart-watermark { top: 35%; transform: translate(-50%, -50%) scale(1.1); position: fixed; }
 
         .header-box { background: linear-gradient(135deg, #ff4d6d 0%, #a855f7 100%); color: white; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
         .input-wrapper { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -133,14 +112,15 @@
         .btn-sort { background: #1e293b; color: white; padding: 16px; border: none; border-radius: 18px; cursor: pointer; font-weight: 800; width: 100%; text-transform: uppercase; margin-bottom: 15px; }
         
         #output-container { display: none; }
-        .section-title { font-size: 10px; font-weight: 900; color: #94a3b8; text-transform: uppercase; display: block; text-align: left; margin: 15px 0 8px 5px; }
         #output-new { background: #fff5f7; border: 2px solid #ff4d6d; border-radius: 20px; padding: 15px; text-align: left; margin-bottom: 10px; }
         #output-history { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 15px; text-align: left; max-height: 250px; overflow-y: auto; margin-bottom: 15px; }
+        
         .label-xs { font-size: 8px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-top: 4px; }
         .val-txt { font-family: monospace; font-size: 12px; color: #1e293b; word-break: break-all; margin-bottom: 4px; }
         .hist-item { font-size: 11px; padding: 10px 0; border-bottom: 1px solid #edf2f7; }
         .hist-meta { font-size: 9px; color: #ff4d6d; font-weight: bold; display: block; }
-        .btn-reset-normal { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 700; }
+        
+        .btn-reset-normal { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-size: 11px; font-weight: 700; margin-top: 5px; }
 
         #special-note { display: none; width: 100%; max-width: 320px; background: #fffef0; padding: 20px; margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1), inset 25px 0 0 -24px #ff4d6d; position: relative; z-index: 10; transform: rotate(-1deg); transition: opacity 0.5s; }
         
@@ -162,7 +142,7 @@
 
         <div class="hide-on-focus">
             <div class="header-box">
-                <h2 style="margin:0; font-size: 18px;">Halo pacar aku</h2>
+                <h2 style="margin:0; font-size: 18px;">Halo rena pacar aku</h2>
             </div>
             <div class="input-wrapper">
                 <input type="text" id="single-input" class="input-field" placeholder="Angka-nya masukin disini rena sayang...">
@@ -170,10 +150,12 @@
             </div>
             <div id="temp-list" style="font-size:11px; color:#64748b; margin-bottom:15px; text-align:left;">Angka-nya disini rena sayang</div>
             <button id="sort-btn" class="btn-sort">Pencet ini rena sayang buat ngurutin</button>
+            
             <div id="output-container">
-                <span class="section-title">Hasilnya</span>
-                <div id="output-new"><span class="label-xs">Sebelum urut:</span><div id="new-before" class="val-txt"></div><span class="label-xs" style="color:#ff4d6d">Sesudah urut:</span><div id="new-after" class="val-txt" style="font-weight:bold; color:#ff4d6d;"></div></div>
-                <span class="section-title">Riwayatmu</span>
+                <div id="output-new">
+                    <span class="label-xs">Sebelum urut:</span><div id="new-before" class="val-txt"></div>
+                    <span class="label-xs" style="color:#ff4d6d">Sesudah urut:</span><div id="new-after" class="val-txt" style="font-weight:bold; color:#ff4d6d;"></div>
+                </div>
                 <div id="output-history"><div id="history-list"></div></div>
                 <button id="full-reset-btn" class="btn-reset-normal">Mulai Ulang</button>
             </div>
@@ -182,8 +164,8 @@
 
     <div id="love-question-container">
         <div class="question-text">Rena, apakah kamu sayang aku?</div>
-        <button class="btn-love btn-ya" onclick="sayangBanget(event)">Ya</button>
-        <button class="btn-love btn-tidak" id="btn-no" onmouseover="moveNo()" onclick="moveNo()">Tidak</button>
+        <button class="btn-love btn-ya" onclick="alert('yeeey aku juga sayang kamu rena ❤️')">Ya</button>
+        <button class="btn-love btn-tidak" id="btn-no" onmouseover="lariTombol()" ontouchstart="lariTombol(event)">Tidak</button>
     </div>
 
     <div id="special-note">
@@ -211,8 +193,7 @@
             init(randomY = false) {
                 this.x = Math.random() * (canvas.width * 1.2); 
                 this.y = randomY ? Math.random() * canvas.height : -50;
-                this.speedY = 1.5; this.speedX = -0.5;  
-                this.fontSize = 15; this.opacity = 0.7;
+                this.speedY = 1.5; this.speedX = -0.5; this.fontSize = 15; this.opacity = 0.7;
             }
             update() {
                 this.y += this.speedY; this.x += this.speedX;
@@ -225,15 +206,43 @@
             }
         }
 
-        function handleHeartClick(e) {
-            e.stopPropagation();
-            const isFocus = document.body.classList.toggle('focus-mode');
+        /* --- LOGIKA TOMBOL LARI (TERKUNCI DI DALAM BOX PUTIH) --- */
+        function lariTombol(e) {
+            if(e) e.preventDefault();
+            const btn = document.getElementById('btn-no');
+            const mainBox = document.getElementById('main-box');
             
-            // Reset posisi tombol "Tidak" saat buka/tutup
+            // Mengambil posisi real-time dari box putih
+            const rect = mainBox.getBoundingClientRect();
+            
+            // Batas aman: Berikan margin 30px di dalam box agar tidak menempel ke garis tepi
+            const margin = 30;
+            const minX = rect.left + margin;
+            const maxX = rect.right - btn.offsetWidth - margin;
+            const minY = rect.top + margin;
+            const maxY = rect.bottom - btn.offsetHeight - margin;
+            
+            // Jika dalam mode fokus box mungkin tidak terlihat tapi batas koordinat tetap ada
+            const x = Math.floor(Math.random() * (maxX - minX)) + minX;
+            const y = Math.floor(Math.random() * (maxY - minY)) + minY;
+
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        function handleHeartClick(e) {
+            e.stopPropagation(); 
+            const isFocus = document.body.classList.toggle('focus-mode');
             const btnNo = document.getElementById('btn-no');
-            btnNo.style.left = ""; btnNo.style.top = ""; btnNo.style.position = "relative";
 
             if (isFocus) {
+                // Tampilkan di tengah box saat pertama muncul
+                btnNo.style.display = 'inline-block';
+                btnNo.style.position = 'relative';
+                btnNo.style.left = 'auto';
+                btnNo.style.top = 'auto';
+                
                 isRaining = true;
                 words = Array.from({ length: 30 }, () => new Word());
                 (function anim() { 
@@ -242,25 +251,11 @@
                     animationFrame = requestAnimationFrame(anim); 
                 })();
             } else {
+                btnNo.style.display = 'none';
                 isRaining = false;
                 cancelAnimationFrame(animationFrame);
                 ctx.clearRect(0,0,canvas.width,canvas.height);
             }
-        }
-
-        // FUNGSI UNTUK TOMBOL TIDAK
-        function moveNo() {
-            const btn = document.getElementById('btn-no');
-            btn.style.position = "fixed";
-            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
-            btn.style.left = x + "px";
-            btn.style.top = y + "px";
-        }
-
-        function sayangBanget(e) {
-            e.stopPropagation();
-            alert("yeeey aku juga sayang sama kamu rena ❤️");
         }
 
         function toggleBox(e) {
@@ -271,30 +266,18 @@
             box.style.pointerEvents = isH ? "auto" : "none";
             document.getElementById('hide-btn').innerText = isH ? "Sembunyi Box" : "Muncul Box";
         }
-
-        function enterBgFocus(e) {
-            e.stopPropagation();
-            document.body.classList.add('bg-only');
-        }
-
-        function handleGlobalClick(e) {
-            if (document.body.classList.contains('bg-only')) {
-                document.body.classList.remove('bg-only');
-            }
-        }
+        function enterBgFocus(e) { e.stopPropagation(); document.body.classList.add('bg-only'); }
+        function handleGlobalClick(e) { if (document.body.classList.contains('bg-only')) document.body.classList.remove('bg-only'); }
     </script>
 
     <script type="py">
         from js import document, window
         from pyodide.ffi import create_proxy
         from datetime import datetime
-
         current_draft = []
-
         def format_number(num):
             if num == int(num): return str(int(num))
             return str(round(num, 3))
-
         def parse_input(value):
             value = value.strip().replace(',', '.')
             if ' ' in value:
@@ -308,7 +291,6 @@
                 n, d = value.split('/')
                 return float(n) / float(d)
             return float(value)
-
         def add_data(event):
             input_el = document.getElementById("single-input")
             temp_display = document.getElementById("temp-list")
@@ -318,13 +300,13 @@
                 num_val = parse_input(val)
                 current_draft.append(num_val)
                 input_el.value = ""
-                temp_display.innerText = "Disini angka-nya rena sayang: " + ", ".join([format_number(x) for x in current_draft])
-            except: window.alert("Gunakan angka (5) atau pecahan (2 1/2)")
+                temp_display.innerText = "Disini angka-nya  rena sayang: " + ", ".join([format_number(x) for x in current_draft])
+            except: window.alert("Cuma bisa angka rena sayaaanggg")
 
         def reset_all(event):
             global current_draft
             current_draft = []
-            document.getElementById("temp-list").innerText = "Angkanya udah di-reset rena sayang: -"
+            document.getElementById("temp-list").innerText = "Angka-nya udah direset rena sayang: -"
             document.getElementById("output-container").style.display = "none"
             document.getElementById("special-note").style.display = "none"
             document.getElementById("history-list").innerHTML = ""
@@ -334,7 +316,6 @@
             if not current_draft:
                 window.alert("tambahin dulu angkanya rena sayang")
                 return
-            
             document.getElementById("output-container").style.display = "block"
             document.getElementById("special-note").style.display = "block"
             before_str = ", ".join([format_number(x) for x in current_draft])
@@ -350,8 +331,8 @@
             item.innerHTML = f"<span class='hist-meta'>📅 {full_time}</span><span class='label-xs'>Sebelum urut:</span> {before_str}<br><span class='label-xs' style='color:#a855f7'>Sesudah urut:</span> {after_str}"
             document.getElementById("history-list").prepend(item)
             current_draft = []
-            document.getElementById("temp-list").innerText = "Angka-nya udah direset sayang: -"
-
+            document.getElementById("temp-list").innerText = "Angka-nya udah direset rena sayang: -"
+        
         document.getElementById("add-btn").addEventListener("click", create_proxy(add_data))
         document.getElementById("sort-btn").addEventListener("click", create_proxy(run_sort))
         document.getElementById("full-reset-btn").addEventListener("click", create_proxy(reset_all))
