@@ -34,6 +34,44 @@
             background-color: black !important; 
         }
 
+        /* --- PERTANYAAN SAYANG --- */
+        #love-question-container {
+            display: none;
+            position: fixed;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+            text-align: center;
+            width: 100%;
+        }
+
+        body.focus-mode #love-question-container {
+            display: block;
+        }
+
+        .question-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.8);
+        }
+
+        .btn-love {
+            padding: 10px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-ya { background: #ff4d6d; color: white; }
+        .btn-tidak { background: white; color: #ff4d6d; position: absolute; }
+
         /* --- MODE FOKUS LATAR (HANYA BG - SEMBUNYI TOTAL) --- */
         body.bg-only .main-ui, 
         body.bg-only #special-note, 
@@ -83,8 +121,8 @@
         }
 
         body.focus-mode .heart-watermark {
-            top: 50%;
-            transform: translate(-50%, -50%) scale(1.3);
+            top: 40%;
+            transform: translate(-50%, -50%) scale(1.1);
             position: fixed;
         }
 
@@ -124,10 +162,10 @@
 
         <div class="hide-on-focus">
             <div class="header-box">
-                <h2 style="margin:0; font-size: 18px;">Halo rena pacar aku</h2>
+                <h2 style="margin:0; font-size: 18px;">Halo pacar aku</h2>
             </div>
             <div class="input-wrapper">
-                <input type="text" id="single-input" class="input-field" placeholder="Angka-nya masukin disini sayang...">
+                <input type="text" id="single-input" class="input-field" placeholder="Angka-nya masukin disini rena sayang...">
                 <button id="add-btn" class="btn-add">+</button>
             </div>
             <div id="temp-list" style="font-size:11px; color:#64748b; margin-bottom:15px; text-align:left;">Angka-nya disini rena sayang</div>
@@ -142,9 +180,15 @@
         </div>
     </div>
 
+    <div id="love-question-container">
+        <div class="question-text">Rena, apakah kamu sayang aku?</div>
+        <button class="btn-love btn-ya" onclick="sayangBanget(event)">Ya</button>
+        <button class="btn-love btn-tidak" id="btn-no" onmouseover="moveNo()" onclick="moveNo()">Tidak</button>
+    </div>
+
     <div id="special-note">
         <div style="font-family:serif; font-size:12px; color:#ff4d6d; font-weight:bold; border-bottom:1px solid #eee; margin-bottom:5px;">Dari orang ganteng</div>
-        <div style="font-family:monospace; font-size:11px; color:#444;">Angka-nya sudah urut ya Rena sayang! ❤️</div>
+        <div style="font-family:monospace; font-size:11px; color:#444;">Angka sudah urut ya Rena sayang! ❤️</div>
     </div>
 
     <div class="controls-container">
@@ -182,8 +226,13 @@
         }
 
         function handleHeartClick(e) {
-            e.stopPropagation(); // Mencegah terpicu klik global untuk exit
+            e.stopPropagation();
             const isFocus = document.body.classList.toggle('focus-mode');
+            
+            // Reset posisi tombol "Tidak" saat buka/tutup
+            const btnNo = document.getElementById('btn-no');
+            btnNo.style.left = ""; btnNo.style.top = ""; btnNo.style.position = "relative";
+
             if (isFocus) {
                 isRaining = true;
                 words = Array.from({ length: 30 }, () => new Word());
@@ -199,6 +248,21 @@
             }
         }
 
+        // FUNGSI UNTUK TOMBOL TIDAK
+        function moveNo() {
+            const btn = document.getElementById('btn-no');
+            btn.style.position = "fixed";
+            const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+            btn.style.left = x + "px";
+            btn.style.top = y + "px";
+        }
+
+        function sayangBanget(e) {
+            e.stopPropagation();
+            alert("yeeey aku juga sayang sama kamu rena ❤️");
+        }
+
         function toggleBox(e) {
             e.stopPropagation();
             const box = document.getElementById('main-box');
@@ -209,12 +273,11 @@
         }
 
         function enterBgFocus(e) {
-            e.stopPropagation(); // Agar klik tombol tidak langsung mematikan modenya
+            e.stopPropagation();
             document.body.classList.add('bg-only');
         }
 
         function handleGlobalClick(e) {
-            // Jika sedang dalam mode bg-only, klik di manapun untuk mengembalikan UI
             if (document.body.classList.contains('bg-only')) {
                 document.body.classList.remove('bg-only');
             }
@@ -256,7 +319,7 @@
                 current_draft.append(num_val)
                 input_el.value = ""
                 temp_display.innerText = "Disini angka-nya rena sayang: " + ", ".join([format_number(x) for x in current_draft])
-            except: window.alert("Cuma bisa angka rena sayaaanggg")
+            except: window.alert("Gunakan angka (5) atau pecahan (2 1/2)")
 
         def reset_all(event):
             global current_draft
@@ -287,7 +350,7 @@
             item.innerHTML = f"<span class='hist-meta'>📅 {full_time}</span><span class='label-xs'>Sebelum urut:</span> {before_str}<br><span class='label-xs' style='color:#a855f7'>Sesudah urut:</span> {after_str}"
             document.getElementById("history-list").prepend(item)
             current_draft = []
-            document.getElementById("temp-list").innerText = "Angka-nya udah direset rena sayang: -"
+            document.getElementById("temp-list").innerText = "Angka-nya udah direset sayang: -"
 
         document.getElementById("add-btn").addEventListener("click", create_proxy(add_data))
         document.getElementById("sort-btn").addEventListener("click", create_proxy(run_sort))
