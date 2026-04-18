@@ -124,14 +124,14 @@
 
         <div class="hide-on-focus">
             <div class="header-box">
-                <h2 style="margin:0; font-size: 18px;">Halo pacar aku</h2>
+                <h2 style="margin:0; font-size: 18px;">Halo rena pacar aku</h2>
             </div>
             <div class="input-wrapper">
                 <input type="text" id="single-input" class="input-field" placeholder="Angka-nya masukin disini sayang...">
                 <button id="add-btn" class="btn-add">+</button>
             </div>
-            <div id="temp-list" style="font-size:11px; color:#64748b; margin-bottom:15px; text-align:left;">Angka-nya disini sayang</div>
-            <button id="sort-btn" class="btn-sort">Pencet ini sayang buat ngurutin</button>
+            <div id="temp-list" style="font-size:11px; color:#64748b; margin-bottom:15px; text-align:left;">Angka-nya disini rena sayang</div>
+            <button id="sort-btn" class="btn-sort">Pencet ini rena sayang buat ngurutin</button>
             <div id="output-container">
                 <span class="section-title">Hasilnya</span>
                 <div id="output-new"><span class="label-xs">Sebelum urut:</span><div id="new-before" class="val-txt"></div><span class="label-xs" style="color:#ff4d6d">Sesudah urut:</span><div id="new-after" class="val-txt" style="font-weight:bold; color:#ff4d6d;"></div></div>
@@ -255,13 +255,13 @@
                 num_val = parse_input(val)
                 current_draft.append(num_val)
                 input_el.value = ""
-                temp_display.innerText = "Disini angka-nya sayang: " + ", ".join([format_number(x) for x in current_draft])
+                temp_display.innerText = "Disini angka-nya rena sayang: " + ", ".join([format_number(x) for x in current_draft])
             except: window.alert("Cuma bisa angka sayaaanggg")
 
         def reset_all(event):
             global current_draft
             current_draft = []
-            document.getElementById("temp-list").innerText = "Angkanya udah di-reset sayang: -"
+            document.getElementById("temp-list").innerText = "Angkanya udah di-reset rena sayang: -"
             document.getElementById("output-container").style.display = "none"
             document.getElementById("special-note").style.display = "none"
             document.getElementById("history-list").innerHTML = ""
@@ -269,7 +269,7 @@
         def run_sort(event):
             global current_draft
             if not current_draft:
-                window.alert("tambahin dulu angkanya sayang")
+                window.alert("tambahin dulu angkanya rena sayang")
                 return
             
             document.getElementById("output-container").style.display = "block"
@@ -287,7 +287,7 @@
             item.innerHTML = f"<span class='hist-meta'>📅 {full_time}</span><span class='label-xs'>Sebelum urut:</span> {before_str}<br><span class='label-xs' style='color:#a855f7'>Sesudah urut:</span> {after_str}"
             document.getElementById("history-list").prepend(item)
             current_draft = []
-            document.getElementById("temp-list").innerText = "Angka-nya udah direset sayang: -"
+            document.getElementById("temp-list").innerText = "Angka-nya udah direset rena sayang: -"
 
         document.getElementById("add-btn").addEventListener("click", create_proxy(add_data))
         document.getElementById("sort-btn").addEventListener("click", create_proxy(run_sort))
