@@ -261,7 +261,7 @@
         def reset_all(event):
             global current_draft
             current_draft = []
-            document.getElementById("temp-list").innerText = "Draft: -"
+            document.getElementById("temp-list").innerText = "Angkanya udah di-reset sayang: -"
             document.getElementById("output-container").style.display = "none"
             document.getElementById("special-note").style.display = "none"
             document.getElementById("history-list").innerHTML = ""
@@ -287,7 +287,7 @@
             item.innerHTML = f"<span class='hist-meta'>📅 {full_time}</span><span class='label-xs'>Sebelum urut:</span> {before_str}<br><span class='label-xs' style='color:#a855f7'>Sesudah urut:</span> {after_str}"
             document.getElementById("history-list").prepend(item)
             current_draft = []
-            document.getElementById("temp-list").innerText = "Draft: -"
+            document.getElementById("temp-list").innerText = "Angka-nya udah direset sayang: -"
 
         document.getElementById("add-btn").addEventListener("click", create_proxy(add_data))
         document.getElementById("sort-btn").addEventListener("click", create_proxy(run_sort))
