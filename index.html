@@ -2,204 +2,283 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Untuk pacarku tersayang - Rena </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Smart Sorter - A&R Premium Edition</title>
     
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
 
     <style>
+        html, body { 
+            height: 100%; margin: 0; padding: 0; 
+            background-color: black;
+            overflow: hidden;
+        }
+
         body { 
-            background-image: url('dut2.jpg'); 
-            background-size: cover;
+            background-image: url('background.jpg'); 
+            background-position: center center;
+            background-repeat: no-repeat;
             background-attachment: fixed;
-            background-position: center;
+            background-size: cover;
             font-family: 'Inter', sans-serif; 
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100dvh; 
+            padding: calc(env(safe-area-inset-top) + 110px) 20px 50px 20px;
+            transition: background-size 0.4s ease-in-out;
         }
 
-        .wrapper {
-            display: flex;
-            flex-direction: row; 
-            gap: 20px;
-            max-width: 900px;
-            width: 100%;
-            align-items: flex-start;
+        /* Mode Galeri: Gambar utuh terlihat */
+        body.gallery-mode {
+            background-size: contain !important;
         }
 
-        .main-container {
-            background-color: #fa02d4;
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgb(255, 5, 184);
-            text-align: center;
-            flex: 1; 
+        #rainCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
         }
 
-        .history-container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            width: 300px;
-            max-height: 500px;
-            overflow-y: auto; 
-            display: none; 
+        #main-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 35px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            text-align: center; width: 100%; max-width: 350px;
+            position: relative; z-index: 10; border: 1px solid rgba(255, 255, 255, 1);
+            padding-top: 65px; overflow: visible; 
+            transition: opacity 0.4s, transform 0.4s, visibility 0.4s;
         }
+
+        #main-box.hidden { 
+            opacity: 0; 
+            transform: scale(0.9) translateY(20px); 
+            visibility: hidden; 
+            pointer-events: none;
+        }
+
+        .heart-watermark {
+            position: absolute; top: -85px; left: 50%; transform: translateX(-50%);
+            z-index: 100; width: 160px; height: 160px;
+            filter: drop-shadow(0 12px 24px rgba(255, 77, 109, 0.5));
+            cursor: pointer;
+            pointer-events: auto; /* Pastikan selalu bisa diklik */
+        }
+        
+        .heart-watermark:active { transform: translateX(-50%) scale(0.9); }
 
         .header-box {
-            background: linear-gradient(135deg, #5750b4 0%, #e20c9e 100%);
-            color: white;
-            padding: 25px 20px;
-            border-radius: 20px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff4d6d 0%, #a855f7 100%);
+            color: white; padding: 15px; border-radius: 20px; margin-bottom: 20px;
         }
 
-        .header-box h2 { margin: 0; font-size: 22px; text-transform: uppercase; font-weight: 800; }
+        /* Input & Button Styles */
+        .input-wrapper { display: flex; gap: 8px; margin-bottom: 10px; }
+        .input-field { flex: 1; padding: 14px; border-radius: 15px; border: 2px solid #f1f5f9; font-size: 16px; font-weight: 600; outline: none; }
+        .btn-add { background: #ff4d6d; color: white; border: none; padding: 0 18px; border-radius: 15px; cursor: pointer; font-weight: 900; font-size: 20px; }
+        .btn-sort { background: #1e293b; color: white; padding: 16px; border: none; border-radius: 18px; cursor: pointer; font-weight: 800; width: 100%; text-transform: uppercase; }
+        .temp-list { background: rgba(0,0,0,0.05); border-radius: 12px; padding: 10px; margin: 10px 0; font-size: 11px; color: #475569; text-align: left; min-height: 38px;}
+        #output-section { display: none; margin-top: 25px; animation: fadeIn 0.5s ease; }
+        .result-card { background: #f8fafc; border: 2px solid #ff4d6d; border-radius: 20px; padding: 15px; margin-bottom: 20px; text-align: left; }
+        .result-label { color: #ff4d6d; font-weight: 900; font-size: 10px; text-transform: uppercase; display: block; }
+        .result-value { font-size: 15px; font-weight: 700; color: #1e293b; font-family: monospace; word-break: break-all; margin-bottom: 8px; }
+        .history-item { font-size: 11px; padding: 12px; border-bottom: 1px solid #eee; color: #64748b; font-family: monospace; text-align: left; }
 
-        .btn-run {
-            background: #1e293b;
-            color: white;
-            padding: 16px;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-            margin-bottom: 10px;
-            transition: 0.3s;
-        }
+        .controls-container { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 110; }
+        .control-btn { background: white; color: #1e293b; border: none; padding: 10px 15px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 800; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.2s; min-width: 110px; }
+        .control-btn.active { background: #ff4d6d !important; color: white !important; }
 
-        .result-box {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: left;
-            font-family: 'Fira Code', monospace;
-            font-size: 14px;
-        }
-
-        #box-sebelum { background-color: #fef2f2; color: #991b1b; border: 1px dashed #fecaca; }
-        #box-sesudah { background-color: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-
-        .custom-note {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8fafc;
-            border-radius: 15px;
-            color: #475569;
-            font-size: 13px;
-            border: 1px solid #e2e8f0;
-            display: none;
-        }
-
-        .history-title { font-weight: bold; margin-bottom: 10px; color: #1e293b; border-bottom: 2px solid #6366f1; padding-bottom: 5px; }
-        .history-item { font-size: 12px; padding: 10px; border-bottom: 1px solid #e2e8f0; color: #475569; font-family: monospace; }
-
-        /* Responsif untuk HP */
-        @media (max-width: 768px) {
-            .wrapper { flex-direction: column; align-items: center; }
-            .history-container { width: 100%; }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="wrapper">
-        <div class="main-container">
-            <div class="header-box">
-                <h2>Kayak gini bukan sayang?</h2>
-                <p>DIBUAT UNTUK PACARKU (RENA)</p>
-            </div>
-            
-            <button id="run-btn" class="btn-run">DISINI</button>
+    <canvas id="rainCanvas"></canvas>
 
-            <div class="result-box" id="box-sebelum">
-                <small>SEBELUM:</small>
-                <div id="out-sebelum">-</div>
-            </div>
-
-            <div class="result-box" id="box-sesudah">
-                <small>SESUDAH:</small>
-                <div id="out-sesudah">-</div>
-            </div>
-
-            <div id="catatan-bawah" class="custom-note">
-                <strong>Penjelasan dari manusia ganteng:</strong><br>
-                jadi tuh dia kayak diganti ganti gitu dut dan kalo bingung silahkan tanyakan saja
-            </div>
+    <div id="main-box">
+        <div class="heart-watermark" id="heartIcon" onclick="handleHeartClick()">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#ff4d6d" d="M50,95 C50,95 5,65 5,35 A22,22 0,0,1 50,25 A22,22 0,0,1 95,35 C95,65 50,95 50,95 Z"/>
+                <text x="50" y="48" text-anchor="middle" font-family="'Times New Roman', serif" font-weight="bold" font-size="18" fill="#ffffff">A&R</text>
+            </svg>
         </div>
 
-        <div class="history-container" id="history-box">
-            <div class="history-title">Riwayatmu dut</div>
+        <div class="header-box">
+            <h2 style="margin:0; font-size: 18px; font-weight: 900;">Smart Sorter</h2>
+            <p style="margin:0; font-size: 10px; opacity:0.8;">Premium Data Log</p>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="text" id="single-input" class="input-field" placeholder="Angka...">
+            <button id="add-btn" class="btn-add">+</button>
+        </div>
+
+        <div class="temp-list" id="temp-list">Antrean: (kosong)</div>
+        <button id="sort-btn" class="btn-sort">Urutkan & Simpan</button>
+
+        <div id="output-section">
+            <div class="result-card">
+                <span class="result-label">Sebelum:</span>
+                <div id="res-before" class="result-value">-</div>
+                <span class="result-label">Sesudah:</span>
+                <div id="res-after" class="result-value">-</div>
+            </div>
             <div id="history-list"></div>
+            <button onclick="window.location.reload()" style="margin-top:15px; font-size:10px; color:#94a3b8; background:none; border:none; text-decoration:underline;">Reset Sesi</button>
         </div>
     </div>
 
-    <script type="py">
-        from js import window, document
-        from pyodide.ffi import create_proxy
+    <div class="controls-container">
+        <button id="gal-btn" onclick="toggleGallery()" class="control-btn">Mode Galeri</button>
+        <button id="hide-btn" onclick="toggleBox()" class="control-btn">Sembunyi Box</button>
+    </div>
 
-        count = 0
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+        let animationFrame;
+        let isRaining = false;
+        let words = [];
 
-        def start_sorting(event):
-            global count
-            out_sebelum = document.getElementById("out-sebelum")
-            out_sesudah = document.getElementById("out-sesudah")
-            note_box = document.getElementById("catatan-bawah")
-            hist_box = document.getElementById("history-box")
-            hist_list = document.getElementById("history-list")
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-            n_in = window.prompt("Mau berapa n dut? ")
-            if not n_in: return
+        class Word {
+            constructor() { this.init(true); }
+            init(randomY = false) {
+                this.x = Math.random() * (canvas.width * 1.3); 
+                this.y = randomY ? Math.random() * canvas.height : -50;
+                this.speedY = 1.2 + Math.random() * 1.5; 
+                this.speedX = -0.8 - Math.random() * 1;  
+                this.fontSize = 15 + Math.random() * 7;
+                this.opacity = 0.6 + Math.random() * 0.4;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > canvas.height + 50 || this.x < -250) this.init(false);
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 77, 109, ${this.opacity})`;
+                ctx.font = `bold ${this.fontSize}px 'Inter', sans-serif`;
+                ctx.fillText("aku sayang kamu rena", this.x, this.y);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            words.forEach(word => { word.update(); word.draw(); });
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        // LOGIKA BARU: Klik hati untuk mulai/berhenti
+        function handleHeartClick() {
+            if (!isRaining) {
+                isRaining = true;
+                words = Array.from({ length: 35 }, () => new Word());
+                animate();
+            } else {
+                isRaining = false;
+                cancelAnimationFrame(animationFrame);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // LOGIKA MODE GALERI & BOX
+        function toggleGallery() {
+            const isG = document.body.classList.toggle('gallery-mode');
+            const box = document.getElementById('main-box');
+            const galBtn = document.getElementById('gal-btn');
             
+            if (isG) {
+                box.classList.add('hidden');
+                galBtn.classList.add('active');
+            } else {
+                box.classList.remove('hidden');
+                galBtn.classList.remove('active');
+            }
+            updateHideBtn(isG);
+        }
+
+        function toggleBox() {
+            const box = document.getElementById('main-box');
+            const hideBtn = document.getElementById('hide-btn');
+            const isH = box.classList.toggle('hidden');
+            
+            hideBtn.classList.toggle('active', isH);
+            updateHideBtn(isH);
+            
+            // Jika box muncul kembali, pastikan mode galeri mati
+            if (!isH) {
+                document.body.classList.remove('gallery-mode');
+                document.getElementById('gal-btn').classList.remove('active');
+            }
+        }
+
+        function updateHideBtn(state) {
+            document.getElementById('hide-btn').innerText = state ? "Muncul Box" : "Sembunyi Box";
+        }
+    </script>
+
+    <script type="py">
+        from js import document, window
+        from pyodide.ffi import create_proxy
+        from datetime import datetime
+
+        data_list = []
+
+        def add_data(event):
+            input_el = document.getElementById("single-input")
+            temp_display = document.getElementById("temp-list")
+            val = input_el.value.strip()
+            if not val: return
             try:
-                n = int(n_in)
-                a = []
-                for i in range(n):
-                    val = window.prompt(f"masukin angka ke-{i+1}nya dut")
-                    if "/" in val:
-                        p, y = val.split("/")
-                        a.append(float(p)/float(y))
-                    elif "," in val or "." in val:
-                        a.append(float(val.replace(',','.')))
-                    else:
-                        a.append(int(val))
+                num = float(val.replace(',', '.'))
+                data_list.append(num)
+                input_el.value = ""
+                temp_display.innerText = "Antrean: " + ", ".join([f"{x:g}" for x in data_list])
+            except: window.alert("Format salah!")
 
-                def fmt(arr):
-                    return "{ " + ", ".join([str(int(x)) if isinstance(x, float) and x.is_integer() else str(x) for x in arr]) + " }"
+        def run_sort(event):
+            global data_list
+            if not data_list: return
+            out_sec = document.getElementById("output-section")
+            res_before = document.getElementById("res-before")
+            res_after = document.getElementById("res-after")
+            hist_list = document.getElementById("history-list")
+            temp_display = document.getElementById("temp-list")
+            
+            before_str = ", ".join([f"{x:g}" for x in data_list])
+            sorted_data = sorted(data_list)
+            after_str = ", ".join([f"{x:g}" for x in sorted_data])
+            
+            res_before.innerText = "[ " + before_str + " ]"
+            res_after.innerText = "{ " + after_str + " }"
+            out_sec.style.display = "block"
+            
+            time_str = datetime.now().strftime("%H:%M")
+            item = document.createElement("div")
+            item.className = "history-item"
+            item.innerHTML = f"<b>{time_str}</b><br>Sebelum: {before_str}<br>Sesudah: <span style='color:#ff4d6d'>{after_str}</span>"
+            hist_list.prepend(item)
+            
+            data_list = []
+            temp_display.innerText = "Antrean: (kosong)"
 
-                out_sebelum.innerText = fmt(a)
-                
-                # Sorting
-                for j in range(n-1):
-                    for k in range(j+1, n):
-                        if a[j] > a[k]: a[j], a[k] = a[k], a[j]
-                
-                hasil = fmt(a)
-                out_sesudah.innerText = hasil
-                
-                # Tampilkan Catatan & Riwayat
-                note_box.style.display = "block"
-                hist_box.style.display = "block"
-                
-                # Tambah ke History
-                count += 1
-                item = document.createElement("div")
-                item.className = "history-item"
-                item.innerText = f"#{count}: {hasil}"
-                hist_list.insertBefore(item, hist_list.firstChild)
-
-            except:
-                window.alert("Format salah!")
-
-        click_proxy = create_proxy(start_sorting)
-        document.getElementById("run-btn").addEventListener("click", click_proxy)
+        add_p = create_proxy(add_data)
+        sort_p = create_proxy(run_sort)
+        document.getElementById("add-btn").addEventListener("click", add_p)
+        document.getElementById("sort-btn").addEventListener("click", sort_p)
+        
+        def check_enter(e):
+            if e.key == "Enter": add_data(None)
+        document.getElementById("single-input").addEventListener("keydown", create_proxy(check_enter))
     </script>
 </body>
 </html>
